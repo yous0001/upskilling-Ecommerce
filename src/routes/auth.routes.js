@@ -8,5 +8,4 @@ authRouter.post('/login', userController.login)
 authRouter.get('/refresh-token', userController.refreshAccessToken)
 authRouter.get('/logout', userController.logout)
 
-
 export {authRouter}
