@@ -7,5 +7,6 @@ authRouter.post('/signup', userController.signUp)
 authRouter.post('/login', userController.login)
 authRouter.get('/refresh-token', userController.refreshAccessToken)
 authRouter.get('/logout', userController.logout)
+authRouter.get('/verify/:token', userController.verifyEmail)
 
 export {authRouter}

@@ -1,5 +1,5 @@
 import User from "../models/user.model.js";
-import { checkLogin, createAccessToken, createRefreshToken, createVerificationToken, registerUser, sendVerificationEmail } from "../services/user.services.js";
+import { checkLogin, createAccessToken, createRefreshToken, registerUser, sendVerificationEmail } from "../services/user.services.js";
 import { AppError } from "../utils/AppError.js";
 import { catchAsync } from "../utils/catchAsync.js";
 import jwt from 'jsonwebtoken';
@@ -99,3 +99,20 @@ export const logout = (req, res) => {
         message: 'Logged out successfully',
     });
 };
+
+export const verifyEmail=catchAsync(async(req,res,next)=>{
+    const {token}=req.params
+    const decoded=jwt.verify(token,process.env.jwt_verification_secret)
+
+    const user=await User.findById(decoded.userId)
+    if(!user) return next(new AppError('User not found',404))
+    if(user.isEmailVerified) return next(new AppError('Email already verified',400))
+    
+    user.isEmailVerified=true
+    await user.save()
+
+    res.status(200).json({
+        success:true,
+        message:'Email verified successfully'
+    })
+})
