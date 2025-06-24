@@ -2,7 +2,7 @@ import User from "../models/user.model.js";
 import { checkLogin, createAccessToken, createRefreshToken, createVerificationToken, registerUser, sendVerificationEmail } from "../services/user.services.js";
 import { AppError } from "../utils/AppError.js";
 import { catchAsync } from "../utils/catchAsync.js";
-import  jwt  from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 
 const cookieOptions = {
     httpOnly: true,
@@ -69,9 +69,9 @@ export const refreshAccessToken = catchAsync(async (req, res, next) => {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
-        
-        const user= await User.findById(decoded.userId);
-        if(!user) return next(new AppError('user not found or have been deleted', 404));
+
+        const user = await User.findById(decoded.userId);
+        if (!user) return next(new AppError('user not found or have been deleted', 404));
 
         const newAccessToken = createAccessToken(decoded.userId);
 
@@ -85,3 +85,13 @@ export const refreshAccessToken = catchAsync(async (req, res, next) => {
         return next(new AppError('Invalid or expired refresh token', 403));
     }
 })
+
+export const logout = (req, res) => {
+    res.clearCookie('accessToken');
+    res.clearCookie('refreshToken');
+
+    res.status(200).json({
+        success: true,
+        message: 'Logged out successfully',
+    });
+};
