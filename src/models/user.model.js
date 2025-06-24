@@ -1,5 +1,5 @@
 import mongoose from "mongoose"
-import { userRoles } from "../utils/user-roles.enum"
+import { userRoles } from "../utils/user-roles.enum.js"
 
 const userSchema=new mongoose.Schema({
     name:{
@@ -29,4 +29,5 @@ const userSchema=new mongoose.Schema({
     timestamps:true
 })
 
-export default mongoose.models.User || mongoose.model("User",userSchema)
+const User=mongoose.models.User || mongoose.model("User",userSchema)
+export default User
