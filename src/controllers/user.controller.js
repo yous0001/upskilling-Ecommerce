@@ -116,3 +116,11 @@ export const verifyEmail=catchAsync(async(req,res,next)=>{
         message:'Email verified successfully'
     })
 })
+
+export const getProfile=catchAsync(async(req,res,next)=>{
+    const user=req.user
+    res.status(200).json({
+        success:true,
+        user
+    })
+})

@@ -4,7 +4,7 @@ import { AppError } from '../utils/AppError.js';
 
 export const auth = async (req, res, next) => {
     try {
-        const token = req.cookies.accessToken;
+        const token = req.cookies.token;
 
         if (!token) {
             return next(new AppError('Not authenticated', 401));
@@ -12,7 +12,7 @@ export const auth = async (req, res, next) => {
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        const user = await User.findById(decoded.userId);
+        const user = await User.findById(decoded.userId).select('-password');
         if (!user) {
             return next(new AppError('User no longer exists', 401));
         }
