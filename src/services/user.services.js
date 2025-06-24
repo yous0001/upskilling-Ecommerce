@@ -26,3 +26,10 @@ export const createAccessToken=(userId)=>{
 
     return accessToken
 }
+
+export const createVerificationToken=async(userId)=>{
+    
+    const verificationToken=await jwt.sign({userId},process.env.JWT_VERIFICATION_SECRET,{expiresIn:'1d'});
+
+    return verificationToken
+}
