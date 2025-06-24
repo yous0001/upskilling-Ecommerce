@@ -1,5 +1,9 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import {AppError} from "../utils/AppError.js";
+import sendMail from "../services/sendMail.js";
+import { generateVerificationEmail } from "../utils/email-templates.js";
 
 export const registerUser = async ({ name, email, password }) => {
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -28,8 +32,22 @@ export const createAccessToken=(userId)=>{
 }
 
 export const createVerificationToken=async(userId)=>{
-    
+
     const verificationToken=await jwt.sign({userId},process.env.JWT_VERIFICATION_SECRET,{expiresIn:'1d'});
 
     return verificationToken
+}
+
+export const sendVerificationEmail=async(user)=>{
+        const verificationToken=await createVerificationToken(user._id);
+
+    const isEmailSent=await sendMail({
+        to:user.email,
+        subject:"Welcome to Upskilling",
+        message:generateVerificationEmail({
+            firstName:user.name,
+            verificationLink:`http://localhost:3000/auth/verify/${verificationToken}`
+        })
+    })
+    return isEmailSent
 }
