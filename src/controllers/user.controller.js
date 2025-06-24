@@ -67,24 +67,28 @@ export const refreshAccessToken = catchAsync(async (req, res, next) => {
     const token = req.cookies.refreshToken;
     if (!token) return next(new AppError('Refresh token not found', 401));
 
+    let decoded;
     try {
-        const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
-
-        const user = await User.findById(decoded.userId);
-        if (!user) return next(new AppError('user not found or have been deleted', 404));
-
-        const newAccessToken = createAccessToken(decoded.userId);
-
-        res.cookie('token', newAccessToken, cookieOptions)
-            .status(200)
-            .json({
-                success: true,
-                message: 'token refreshed successfully'
-            })
+        decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
     } catch (err) {
         return next(new AppError('Invalid or expired refresh token', 403));
     }
-})
+
+    const user = await User.findById(decoded.userId);
+    if (!user) return next(new AppError('User not found or has been deleted', 404));
+
+
+    const newAccessToken = createAccessToken(user._id);
+    const newRefreshToken = createRefreshToken(user._id);
+
+    res.cookie('accessToken', newAccessToken, accessCookieOptions)
+        .cookie('refreshToken', newRefreshToken, refreshCookieOptions)
+        .status(200)
+        .json({
+            success: true,
+            message: 'Token refreshed successfully',
+        });
+});
 
 export const logout = (req, res) => {
     res.clearCookie('accessToken');
