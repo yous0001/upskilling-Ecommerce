@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { auth } from "../middlewares/auth.middleware";
+import { auth } from "../middlewares/auth.middleware.js";
 import * as withlistController from '../controllers/withlist.controller.js'
 
 export const withlistRouter=Router()

@@ -1,5 +1,6 @@
-import WithList from "../models/with-list.model"
-import { catchAsync } from "../utils/catchAsync"
+import WithList from "../models/with-list.model.js";
+import { catchAsync } from "../utils/catchAsync.js";
+import { AppError } from "../utils/AppError.js";
 
 export const addProductToWithList = catchAsync(async (req, res, next) => {
     const { id } = req.params
@@ -39,7 +40,7 @@ export const removeProductFromWithList = catchAsync(async (req, res, next) => {
 
 export const getWithList = catchAsync(async (req, res, next) => {
     const withlist = await WithList.findOne({ user: req.user._id }).populate('products')
-    
+
     if (!withlist) {
         return res.status(200).json({
                 success: true,
