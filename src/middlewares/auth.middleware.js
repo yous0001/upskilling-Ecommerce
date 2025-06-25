@@ -7,7 +7,7 @@ export const auth = async (req, res, next) => {
         const token = req.cookies.token;
 
         if (!token) {
-            return next(new AppError('Not authenticated', 401));
+            return next(new AppError('Not authenticated. please login first', 401));
         }
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);

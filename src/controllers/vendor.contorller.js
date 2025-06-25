@@ -1,15 +1,16 @@
 
 import User from "../models/user.model.js";
 import Vendor from "../models/vendor.model.js";
+import { AppError } from "../utils/AppError.js";
 import { catchAsync } from "../utils/catchAsync.js";
 import { userRoles } from "../utils/user-roles.enum.js"
 
 export const addVendor = catchAsync(async (req, res, next) => {
-    const { ownerId } = req.user._id
+    const ownerId  = req.user._id
     const { name, description } = req.body
 
     if (!name || !description)
-        return next(new AppError('All fields are required', 400));
+        return next(new AppError('All fields are required (name, description)', 400));
 
     const owner = await User.findById(ownerId)
     if (owner.role !== userRoles.VENDOR)
@@ -38,6 +39,10 @@ export const getVendorById = catchAsync(async (req, res, next) => {
     const { id } = req.params
 
     const vendor = await Vendor.findById(id)
+    
+    if (!vendor)
+        return next(new AppError('Vendor not found', 404));
+
     res.status(200).json({
         success: true,
         vendor
@@ -55,7 +60,7 @@ export const updateVendorById = catchAsync(async (req, res, next) => {
     if (!vendor)
         return next(new AppError('Vendor not found', 404));
 
-    if (vendor.owner.toString() !== ownerId)
+    if (vendor.owner.toString() !== ownerId.toString())
         return next(new AppError('You are not authorized to update this vendor', 403));
 
     if (name) vendor.name = name
@@ -77,7 +82,7 @@ export const deleteVendorById = catchAsync(async (req, res, next) => {
     if (!vendor)
         return next(new AppError('Vendor not found', 404));
 
-    if (vendor.owner.toString() !== ownerId)
+    if (vendor.owner.toString() !== ownerId.toString())
         return next(new AppError('You are not authorized to delete this vendor', 403));
 
     await Vendor.findByIdAndDelete(id)

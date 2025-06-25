@@ -1,4 +1,5 @@
 export const productCategories = {
+    MOBILES: 'mobiles',
     ELECTRONICS: 'electronics',
     CLOTHING: 'clothing',
     BOOKS: 'books',
