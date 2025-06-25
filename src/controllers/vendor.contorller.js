@@ -33,3 +33,13 @@ export const getVendors = catchAsync(async (req, res, next) => {
         vendors
     })
 })
+
+export const getVendorById = catchAsync(async (req, res, next) => {
+    const { id } = req.params
+    
+    const vendor = await Vendor.findById(id)
+    res.status(200).json({
+        success: true,
+        vendor
+    })
+})

@@ -8,3 +8,4 @@ export const vendorRouter=express.Router()
 
 vendorRouter.post('/',auth,vendorController.addVendor);
 vendorRouter.get('/',auth,vendorController.getVendors);
+vendorRouter.get('/:id',auth,vendorController.getVendorById);
