@@ -141,7 +141,7 @@ export const updateUserById=catchAsync(async(req,res,next)=>{
     const {id}=req.params
     const {name,email,password}=req.body
 
-    if(req.user._id !== id) 
+    if(req.user._id.toString() !== id) 
         return next(new AppError('You are not authorized to update this user',403))
 
     if(!name && !email && !password) 
@@ -152,7 +152,11 @@ export const updateUserById=catchAsync(async(req,res,next)=>{
         return next(new AppError('User not found',404))
 
     if(name)user.name=name
-    if(email)user.email=email
+    if(email){
+        const isEmailExists=await User.findOne({email})
+        if(isEmailExists) return next(new AppError('Email already exists',400))
+        user.email=email
+    }
 
     await user.save()
     res.status(200).json({
