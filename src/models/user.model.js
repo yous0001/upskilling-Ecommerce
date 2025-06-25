@@ -25,6 +25,26 @@ const userSchema=new mongoose.Schema({
     isEmailVerified:{
         type:Boolean,
         default:false
+    },
+    cart:{
+        products:[{
+            product:{
+                type:mongoose.Schema.Types.ObjectId,
+                ref:"Product"
+            },
+            quantity:{
+                type:Number,
+                default:1
+            }
+        }],
+        subtotal:{
+            type:Number,
+            default:0
+        },
+        totalPrice:{
+            type:Number,
+            default:0
+        },
     }
 },{
     timestamps:true
