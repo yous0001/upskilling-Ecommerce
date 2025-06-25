@@ -10,3 +10,4 @@ productRouter.get('/',auth,productController.getProducts);
 productRouter.get('/:id',auth,productController.getProductById);
 productRouter.put('/:id',auth,productController.updateProductById);
 productRouter.delete('/:id',auth,productController.deleteProductById);
+productRouter.get('/top-5 ',auth,productController.getTopProducts);

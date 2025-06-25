@@ -102,3 +102,11 @@ export const deleteProductById=catchAsync(async(req,res,next)=>{
         message:'Product deleted successfully'
     })
 })
+
+export const getTopProducts=catchAsync(async(req,res,next)=>{
+    const products=await Product.find().sort({rate:-1}).limit(5)
+    res.status(200).json({
+        success:true,
+        products
+    })
+})
