@@ -80,7 +80,7 @@ export const deleteVendorById = catchAsync(async (req, res, next) => {
     if (vendor.owner.toString() !== ownerId)
         return next(new AppError('You are not authorized to delete this vendor', 403));
 
-    await vendor.remove()
+    await Vendor.findByIdAndDelete(id)
     res.status(200).json({
         success: true,
         message: 'Vendor deleted successfully'
