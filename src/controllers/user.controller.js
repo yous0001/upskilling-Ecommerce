@@ -124,3 +124,57 @@ export const getProfile=catchAsync(async(req,res,next)=>{
         user
     })
 })
+
+export const getUserById=catchAsync(async(req,res,next)=>{
+    const {id}=req.params
+    const user=await User.findById(id)
+
+    if(!user) return next(new AppError('User not found',404))
+    
+    res.status(200).json({
+        success:true,
+        user
+    })
+})
+
+export const updateUserById=catchAsync(async(req,res,next)=>{
+    const {id}=req.params
+    const {name,email,password}=req.body
+
+    if(req.user._id !== id) 
+        return next(new AppError('You are not authorized to update this user',403))
+
+    if(!name && !email && !password) 
+        return next(new AppError('At least one field is required',400))
+
+    const user=await User.findById(id)
+    if(!user) 
+        return next(new AppError('User not found',404))
+
+    if(name)user.name=name
+    if(email)user.email=email
+
+    await user.save()
+    res.status(200).json({
+        success:true,
+        message:'User updated successfully',
+        user
+    })
+})
+
+export const deleteUserById=catchAsync(async(req,res,next)=>{
+    const {id}=req.params
+
+    if(req.user._id !== id) 
+        return next(new AppError('You are not authorized to delete this user',403))
+
+    const user=await User.findById(id)
+    if(!user) return next(new AppError('User not found',404))
+
+    await User.findByIdAndDelete(id)
+    
+    res.status(200).json({
+        success:true,
+        message:'User deleted successfully'
+    })
+})
