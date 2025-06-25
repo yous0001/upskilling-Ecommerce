@@ -49,9 +49,56 @@ export const getProductById=catchAsync(async(req,res,next)=>{
 
     if(!product) 
         return next(new AppError('Product not found',404))
-    
+
     res.status(200).json({
         success:true,
         product
+    })
+})
+
+export const updateProductById=catchAsync(async(req,res,next)=>{
+    const {id}=req.params
+    const {name,description,price,vendorId,category}=req.body
+
+    if(!name && !description && !price && !vendorId && !category)
+        return next(new AppError('At least one field is required',400))
+
+    const product=await Product.findById(id).populate('vendorId')
+    if(!product) 
+        return next(new AppError('Product not found',404))
+
+    if(product.vendorId.owner.toString() !== req.user._id.toString())
+        return next(new AppError('You are not authorized to update this product',403))
+
+    if(name){
+        const isProductExists=await Product.findOne({name})
+        if(isProductExists) return next(new AppError('Product already exists',400))
+        product.name=name
+    }
+    if(description)product.description=description
+    if(price)product.price=price
+    if(category)product.category=category
+
+    await product.save()
+    res.status(200).json({
+        success:true,
+        message:'Product updated successfully',
+        product
+    })
+})
+
+export const deleteProductById=catchAsync(async(req,res,next)=>{
+    const {id}=req.params
+    const product=await Product.findById(id).populate('vendorId')
+    if(!product) 
+        return next(new AppError('Product not found',404))
+
+    if(product.vendorId.owner.toString() !== req.user._id.toString())
+        return next(new AppError('You are not authorized to delete this product',403))
+
+    await Product.findByIdAndDelete(id) 
+    res.status(200).json({
+        success:true,
+        message:'Product deleted successfully'
     })
 })
