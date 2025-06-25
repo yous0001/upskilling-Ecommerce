@@ -9,6 +9,7 @@ import  {userRouter}  from './src/routes/user.routes.js';
 import {vendorRouter} from "./src/routes/vendor.routes.js";
 import { productRouter } from "./src/routes/product.routes.js";
 import { withlistRouter } from "./src/routes/withlist.routes.js";
+import {cartRouter} from "./src/routes/cart.routes.js";
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ app.use("/users",userRouter);
 app.use("/vendor",vendorRouter);
 app.use("/products",productRouter);
 app.use("/with-list",withlistRouter);
+app.use("/cart",cartRouter);
 
 
 app.use((req, res, next) => {

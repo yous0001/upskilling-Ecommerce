@@ -1,7 +1,7 @@
 import { Router } from "express";
 import * as cartController from '../controllers/cart.controller.js'
 
-const cartRouter=Router()
+export const cartRouter=Router()
 
 
 cartRouter.post('/add/:id',cartController.addProductToCart)
@@ -10,4 +10,3 @@ cartRouter.get('/',cartController.getCart)
 cartRouter.post('/clear',cartController.clearCart)
 
 
-export default cartRouter
