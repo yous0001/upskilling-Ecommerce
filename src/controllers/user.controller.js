@@ -131,7 +131,7 @@ export const getUserById=catchAsync(async(req,res,next)=>{
 
     if(!user) return next(new AppError('User not found',404))
     
-    res.status(200).json({
+    return res.status(200).json({
         success:true,
         user
     })

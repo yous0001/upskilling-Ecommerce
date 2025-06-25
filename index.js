@@ -5,6 +5,8 @@ import { db_connection } from "./src/config/db-connection.js";
 import { errorHandler } from "./src/middlewares/error-handler.middleware.js";
 import { authRouter } from "./src/routes/auth.routes.js";
 import cookieParser from "cookie-parser";
+import { userRouter } from './src/routes/user.routes.js';
+import { vendorRouter } from "./src/routes/vendor.routes.js";
 
 dotenv.config();
 
@@ -15,6 +17,8 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use("/auth",authRouter);
+app.use("/users",userRouter);
+app.use("/vendor",vendorRouter);
 
 
 
